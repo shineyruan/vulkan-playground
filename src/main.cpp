@@ -4,6 +4,7 @@
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include "glm/glm.hpp"
+#include "print_glm.hpp"
 #include "spdlog/spdlog.h"
 
 int main() {
@@ -23,6 +24,7 @@ int main() {
   glm::mat4 matrix;
   glm::vec4 vec;
   auto test = matrix * vec;
+  std::cout << "test matrix: " << test << "\n";
 
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
