@@ -5,10 +5,17 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2 -Wall")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -Wall")
 
 set(CMAKE_CXX_STANDARD 17)
+if (WIN32)
+  set(VCPKG_TARGET_TRIPLET "x64-windows")
+  add_compile_options("/W4 /WX")
+else()
+  add_compile_options("-Wall")
+endif()
+
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
 
 add_subdirectory(external/include/spdlog-1.9.2)
 
@@ -32,17 +39,20 @@ find_package(glm REQUIRED)
 
 include_directories(
   ${GLM_INCLUDE_DIRS} 
-  ${GLFW_INCLUDE_DIRS} 
-  ${VULKAN_INCLUDE_DIRS} 
+  ${GLFW_INCLUDE_DIR} 
+  ${VULKAN_INCLUDE_DIR} 
 )
 
-add_executable(hello_vulkan main.cpp)
+add_library(print_glm src/print_glm.cpp)
+
+add_executable(hello_vulkan src/main.cpp)
 target_link_libraries(hello_vulkan 
   ${LIBRARIES}
+  print_glm
   spdlog::spdlog_header_only
 )
 
-add_executable(triangle triangle.cpp)
+add_executable(triangle src/triangle.cpp)
 target_link_libraries(triangle 
   ${LIBRARIES}
   spdlog::spdlog_header_only
